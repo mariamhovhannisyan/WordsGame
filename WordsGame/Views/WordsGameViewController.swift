@@ -22,21 +22,7 @@ class WordsGameViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.englishWordLabel.textAlignment = .center
-        self.englishWordLabel.backgroundColor = .yellow
-        self.englishWordLabel.layer.borderColor = UIColor.black.cgColor
-        self.englishWordLabel.layer.borderWidth = 1
-        self.correctAttemptsLabel.textAlignment = .center
-        self.wrongAttemptsLabel.textAlignment = .center
-        self.correctButton.layer.cornerRadius = self.correctButton.bounds.height/2
-        self.wrongButton.layer.cornerRadius = self.wrongButton.bounds.height/2
-        
-        self.view.addSubview(self.spanishWordLabel)
-        self.spanishWordLabel.textAlignment = .center
-        self.spanishWordLabel.backgroundColor = .gray
-        self.spanishWordLabel.layer.borderColor = UIColor.black.cgColor
-        self.spanishWordLabel.layer.borderWidth = 1
+        self.polishUserInterface()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -44,6 +30,35 @@ class WordsGameViewController: UIViewController {
             self.presenter.startNewGame()
             self.isGameInProgress = true
         }
+    }
+    
+    private func polishUserInterface() {
+        self.englishWordLabel.textAlignment = .center
+        self.englishWordLabel.backgroundColor = UIColor.init(hex: 0x746AB0)
+        self.englishWordLabel.layer.borderColor = UIColor.black.cgColor
+        self.englishWordLabel.layer.borderWidth = 1
+        self.englishWordLabel.layer.cornerRadius = 8
+        self.englishWordLabel.clipsToBounds = true
+        self.correctAttemptsLabel.textAlignment = .center
+        self.wrongAttemptsLabel.textAlignment = .center
+        self.correctButton.layer.cornerRadius = self.correctButton.bounds.height/2
+        self.correctButton.layer.shadowColor = UIColor.black.cgColor
+        self.correctButton.layer.shadowOffset = CGSize(width: 8.0, height: 8.0)
+        self.correctButton.layer.shadowRadius = 8
+        self.correctButton.layer.shadowOpacity = 0.8
+        self.wrongButton.layer.cornerRadius = self.wrongButton.bounds.height/2
+        self.wrongButton.layer.shadowColor = UIColor.black.cgColor
+        self.wrongButton.layer.shadowOffset = CGSize(width: 8.0, height: 8.0)
+        self.wrongButton.layer.shadowRadius = 8
+        self.wrongButton.layer.shadowOpacity = 0.8
+        
+        self.view.addSubview(self.spanishWordLabel)
+        self.spanishWordLabel.textAlignment = .center
+        self.spanishWordLabel.backgroundColor = .gray
+        self.spanishWordLabel.layer.borderColor = UIColor.black.cgColor
+        self.spanishWordLabel.layer.borderWidth = 1
+        self.spanishWordLabel.layer.cornerRadius = 8
+        self.spanishWordLabel.clipsToBounds = true
     }
     
     @IBAction func correctButtonClicked(_ sender: Any) {
@@ -131,3 +146,16 @@ extension WordsGameViewController: PresenterView {
         })
     }
 }
+
+        extension UIColor {
+
+            convenience init(hex: Int) {
+                let components = (
+                    R: CGFloat((hex >> 16) & 0xff) / 255,
+                    G: CGFloat((hex >> 08) & 0xff) / 255,
+                    B: CGFloat((hex >> 00) & 0xff) / 255
+                )
+                self.init(red: components.R, green: components.G, blue: components.B, alpha: 1)
+            }
+
+        }
