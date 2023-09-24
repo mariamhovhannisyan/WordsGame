@@ -13,8 +13,6 @@ struct TranslationPair {
     var textSpa: String
 }
 
-
-
 struct Dictionary {
     
     var wordPairs: [TranslationPair]
@@ -35,8 +33,10 @@ struct Dictionary {
                 let data = try Data(contentsOf: url)
                 if let jsonArray = (try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))) as? [[String : String]] {
                     for dict in jsonArray {
-                        dictResult[dict["text_eng"] ?? ""] = dict["text_spa"]
-                        let pair = TranslationPair(textEng: dict["text_eng"] ?? "", textSpa: dict["text_spa"] ?? "")
+                        let english = dict["text_eng"] ?? ""
+                        let spanish = dict["text_spa"] ?? ""
+                        dictResult[english] = spanish
+                        let pair = TranslationPair(textEng: english, textSpa: spanish)
                         result.append(pair)
                     }
                 }
@@ -45,9 +45,9 @@ struct Dictionary {
                 print(error)
             }
         }
+        
         return (result, dictResult)
     }
-    
     
     func doTheseWordsTranslateEachOther(english: String, spanish: String) -> Bool {
         return self.wordPairsDict[english] == spanish
@@ -56,7 +56,7 @@ struct Dictionary {
 
 protocol PresenterView: AnyObject {
     func showNewPair()
-    func stopTheGame(correctCount: Int, wrongCount: Int)
+    func stopTheGame(correctCount: Int, wrongCount: Int, isWin: Bool)
     func showSuccessEmoji()
     func showFailEmoji()
     func updateCorrectLabelWithNumber(number :Int)
@@ -71,7 +71,7 @@ class WordsGamePresenter {
     let maxAttemptsConst = 15
     let probabilityConst = 0.25
     let maxWrongAttemptsConst = 3
-    var balancedList: [TranslationPair]
+    var balancedList: [TranslationPair]?
     
     
     var correctAttempts = 0 {
@@ -88,9 +88,12 @@ class WordsGamePresenter {
     
     init(with view: PresenterView) {
         self.view = view
+    }
+    
+    func getBalancedList() ->  [TranslationPair] {
         let shuffledPairs = self.dict.wordPairs.shuffled()
         //let numCorrectPairs = Int((Double(shuffledPairs.count) * probabilityConst).rounded(.up))
-        let maxAttemptsBalance = Int((Double(self.maxAttemptsConst) * 0.25).rounded(.up))
+        let maxAttemptsBalance = Int((Double(self.maxAttemptsConst) * probabilityConst).rounded(.up))
         let selectedCorrectPairs = Array(shuffledPairs.prefix(maxAttemptsBalance))
         var selectedIncorrectPairs = [TranslationPair]()
         
@@ -104,30 +107,25 @@ class WordsGamePresenter {
             let pair = TranslationPair(textEng: shuffledPairs[randomEnglishIndex].textEng,textSpa: shuffledPairs[randomSpanishIndex].textSpa)
             selectedIncorrectPairs.append(pair)
         }
-        
-        self.balancedList = Array(selectedCorrectPairs + selectedIncorrectPairs).shuffled()
+        return Array(selectedCorrectPairs + selectedIncorrectPairs).shuffled()
     }
     
     func userDidntGuessInTime() {
-        self.wrongAttempts += 1
-        self.checkTheState()
+        self.evaluateAnswer(isCorrect: false)
     }
     
     func wrongButtonTapped() {
         let isCorrectAnswer = !self.dict.doTheseWordsTranslateEachOther(english: self.getCurrentEnglishWord(), spanish: self.getCurrentSpanishWord())
-        if isCorrectAnswer {
-            self.view?.showSuccessEmoji()
-            self.correctAttempts += 1
-        } else {
-            self.view?.showFailEmoji()
-            self.wrongAttempts += 1
-        }
-        self.checkTheState()
+        self.evaluateAnswer(isCorrect: isCorrectAnswer)
     }
     
     func correctButtonTapped() {
         let isCorrectAnswer = self.dict.doTheseWordsTranslateEachOther(english: self.getCurrentEnglishWord(), spanish: self.getCurrentSpanishWord())
-        if isCorrectAnswer {
+        self.evaluateAnswer(isCorrect: isCorrectAnswer)
+    }
+    
+    func evaluateAnswer(isCorrect: Bool) {
+        if (isCorrect) {
             self.view?.showSuccessEmoji()
             self.correctAttempts += 1
         } else {
@@ -137,16 +135,19 @@ class WordsGamePresenter {
         self.checkTheState()
     }
     
-    func resetTheState() {
+    func startNewGame() {
         self.wrongAttempts = 0
         self.correctAttempts = 0
         self.currentPairIndex = 0
+        self.balancedList = self.getBalancedList()
         self.view?.showNewPair()
     }
     
-    private func checkTheState() {
-        if self.wrongAttempts == self.maxWrongAttemptsConst || self.wrongAttempts + self.correctAttempts == self.maxAttemptsConst {
-            self.view?.stopTheGame(correctCount: self.correctAttempts, wrongCount: self.wrongAttempts)
+    func checkTheState() {
+        if self.wrongAttempts == self.maxWrongAttemptsConst {
+            self.view?.stopTheGame(correctCount: self.correctAttempts, wrongCount: self.wrongAttempts, isWin: false)
+        } else if self.wrongAttempts + self.correctAttempts == self.maxAttemptsConst {
+            self.view?.stopTheGame(correctCount: self.correctAttempts, wrongCount: self.wrongAttempts, isWin: true)
         } else {
             self.currentPairIndex += 1
             self.view?.showNewPair()
@@ -154,10 +155,10 @@ class WordsGamePresenter {
     }
     
     func getCurrentEnglishWord() -> String {
-        return self.balancedList[self.currentPairIndex].textEng
+        return self.balancedList?[self.currentPairIndex].textEng ?? ""
     }
     
     func getCurrentSpanishWord() -> String {
-        return self.balancedList[self.currentPairIndex].textSpa
+        return self.balancedList?[self.currentPairIndex].textSpa ?? ""
     }
 }

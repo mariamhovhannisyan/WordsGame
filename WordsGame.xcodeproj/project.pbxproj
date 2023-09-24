@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		871DAC142AC055DB00B09206 /* WordsGamePresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 871DAC132AC055DB00B09206 /* WordsGamePresenterTests.swift */; };
+		871DAC152AC0563600B09206 /* WordsGamePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87EAF7A92ABE17280002AABB /* WordsGamePresenter.swift */; };
 		87EAF7742ABDA3AB0002AABB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87EAF7732ABDA3AB0002AABB /* AppDelegate.swift */; };
 		87EAF7762ABDA3AB0002AABB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87EAF7752ABDA3AB0002AABB /* SceneDelegate.swift */; };
 		87EAF77B2ABDA3AB0002AABB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 87EAF7792ABDA3AB0002AABB /* Main.storyboard */; };
@@ -39,6 +41,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		871DAC132AC055DB00B09206 /* WordsGamePresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordsGamePresenterTests.swift; sourceTree = "<group>"; };
 		87EAF7702ABDA3AB0002AABB /* WordsGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WordsGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		87EAF7732ABDA3AB0002AABB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		87EAF7752ABDA3AB0002AABB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -123,6 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				87EAF78A2ABDA3AD0002AABB /* WordsGameTests.swift */,
+				871DAC132AC055DB00B09206 /* WordsGamePresenterTests.swift */,
 			);
 			path = WordsGameTests;
 			sourceTree = "<group>";
@@ -296,6 +300,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				871DAC142AC055DB00B09206 /* WordsGamePresenterTests.swift in Sources */,
+				871DAC152AC0563600B09206 /* WordsGamePresenter.swift in Sources */,
 				87EAF78B2ABDA3AD0002AABB /* WordsGameTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
