@@ -67,6 +67,7 @@ protocol PresenterView: AnyObject {
 class WordsGamePresenter {
     weak var view: PresenterView?
     var dict = Dictionary()
+    var setForEnglishIndexes: Set<Int> = []
     var currentPairIndex = 0
     let maxAttemptsConst = 15
     let probabilityConst = 0.25
@@ -92,16 +93,20 @@ class WordsGamePresenter {
     
     func getBalancedList() ->  [TranslationPair] {
         let shuffledPairs = self.dict.wordPairs.shuffled()
-        //let numCorrectPairs = Int((Double(shuffledPairs.count) * probabilityConst).rounded(.up))
-        let maxAttemptsBalance = Int((Double(self.maxAttemptsConst) * probabilityConst).rounded(.up))
-        let selectedCorrectPairs = Array(shuffledPairs.prefix(maxAttemptsBalance))
+        //let correctAttemptsCount = Int((Double(shuffledPairs.count) * probabilityConst).rounded(.up)) :The count for the whole list
+        let correctAttemptsCount = Int((Double(self.maxAttemptsConst) * probabilityConst).rounded(.up))
+        let selectedCorrectPairs = Array(shuffledPairs.prefix(correctAttemptsCount))
         var selectedIncorrectPairs = [TranslationPair]()
         
-        for _ in 0..<self.maxAttemptsConst-maxAttemptsBalance {
-            let randomEnglishIndex = Int.random(in: maxAttemptsBalance..<shuffledPairs.count)
-            var randomSpanishIndex = Int.random(in: maxAttemptsBalance..<shuffledPairs.count)
-            while randomSpanishIndex == randomEnglishIndex {
-                randomSpanishIndex = Int.random(in: maxAttemptsBalance..<shuffledPairs.count)
+        for _ in 0..<self.maxAttemptsConst-correctAttemptsCount {
+            var randomEnglishIndex = Int.random(in: correctAttemptsCount..<shuffledPairs.count)
+            while self.setForEnglishIndexes.contains(randomEnglishIndex) { // for excluding the same english word to appear in the list
+                randomEnglishIndex = Int.random(in: correctAttemptsCount..<shuffledPairs.count)
+            }
+            self.setForEnglishIndexes.insert(randomEnglishIndex)
+            var randomSpanishIndex = Int.random(in: correctAttemptsCount..<shuffledPairs.count)
+            while randomSpanishIndex == randomEnglishIndex { // for excluding a correct word pair to appear in the list
+                randomSpanishIndex = Int.random(in: correctAttemptsCount..<shuffledPairs.count)
             }
             
             let pair = TranslationPair(textEng: shuffledPairs[randomEnglishIndex].textEng,textSpa: shuffledPairs[randomSpanishIndex].textSpa)

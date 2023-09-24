@@ -20,6 +20,15 @@ class WordsGameViewController: UIViewController {
     
     var spanishWordLabel = UILabel()
     
+    init() {
+        super.init(nibName: "WordsGameViewController", bundle: Bundle.main)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.polishUserInterface()
@@ -118,7 +127,7 @@ extension WordsGameViewController: PresenterView {
             }))
             present(alert, animated: true)
         } else {
-            let alert = UIAlertController(title: "Let's try another 15 pairs !", message: "orrect attempts: \(correctCount) \n Wrong attempts: \(wrongCount)", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Let's try another 15 pairs !", message: "Correct attempts: \(correctCount) \n Wrong attempts: \(wrongCount)", preferredStyle: .alert)
             let restartAction = UIAlertAction(title: "Restart", style: .default, handler: { action in
                 self.presenter.startNewGame()
             })
