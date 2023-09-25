@@ -23,7 +23,7 @@ class WordsGamePresenterTests: XCTestCase {
         XCTAssertEqual(presenter.correctAttempts, 0)
         XCTAssertEqual(presenter.wrongAttempts, 0)
         XCTAssertEqual(presenter.currentPairIndex, 0)
-        XCTAssertFalse(presenter.balancedList.isEmpty)
+        XCTAssertTrue(presenter.balancedList.isEmpty)
     }
     
     func testUserDidntGuessInTime() {
@@ -49,11 +49,11 @@ class WordsGamePresenterTests: XCTestCase {
     }
 
     
-    func testResetTheState() {
+    func testStartNewGame() {
         presenter.correctAttempts = 5
         presenter.wrongAttempts = 3
         presenter.currentPairIndex = 10
-        presenter.resetTheState()
+        presenter.startNewGame()
         
         XCTAssertEqual(presenter.correctAttempts, 0)
         XCTAssertEqual(presenter.wrongAttempts, 0)

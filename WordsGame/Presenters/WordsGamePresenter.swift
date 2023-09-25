@@ -72,7 +72,7 @@ class WordsGamePresenter {
     let maxAttemptsConst = 15
     let probabilityConst = 0.25
     let maxWrongAttemptsConst = 3
-    var balancedList: [TranslationPair]?
+    var balancedList = [TranslationPair]()
     
     
     var correctAttempts = 0 {
@@ -144,6 +144,7 @@ class WordsGamePresenter {
         self.wrongAttempts = 0
         self.correctAttempts = 0
         self.currentPairIndex = 0
+        self.setForEnglishIndexes = []
         self.balancedList = self.getBalancedList()
         self.view?.showNewPair()
     }
@@ -160,10 +161,12 @@ class WordsGamePresenter {
     }
     
     func getCurrentEnglishWord() -> String {
-        return self.balancedList?[self.currentPairIndex].textEng ?? ""
+        guard self.balancedList.count >= self.currentPairIndex else {return ""}
+        return self.balancedList[self.currentPairIndex].textEng
     }
     
     func getCurrentSpanishWord() -> String {
-        return self.balancedList?[self.currentPairIndex].textSpa ?? ""
+        guard self.balancedList.count >= self.currentPairIndex else {return ""}
+        return self.balancedList[self.currentPairIndex].textSpa
     }
 }
